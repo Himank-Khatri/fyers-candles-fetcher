@@ -5,12 +5,16 @@ import os
 import pandas as pd
 import numpy as np
 
-
-app_id = "EFT30ANIEG-100"
-app_secret = "IIQ909PFQF"
+app_id = ""
+app_secret = ""
 redirect_url = "https://www.google.com/"
 
-symbols = ["BPCL"]
+symbols = []
+
+start_date = dt.date(2023,6,1)
+end_date =  dt.datetime.now().date()
+
+time_zone = 'Asia/Kolkata'
 
 def login():
     if not os.path.exists(f'{dt.date.today().strftime("%b-%d-%Y")}_access_token.txt'):
@@ -50,23 +54,15 @@ def get_data(symbol,res,start,end,date_format=1,cont=0):
     sdata = fyers1.history(data=data)
     
     df1 = pd.DataFrame(sdata['candles'])
-    df1[0]  = pd.to_datetime(df1[0], unit='s').dt.tz_localize('utc').dt.tz_convert('Asia/Kolkata')
+    df1[0]  = pd.to_datetime(df1[0], unit='s').dt.tz_localize('utc').dt.tz_convert(time_zone)
     df1.columns = ['date','open','high','low','close','volume']
     
     return df1
     
 
-start_date = dt.date(2023,6,1)
-end_date =  dt.datetime.now().date()
-df = pd.DataFrame()
-
 total_days = abs((start_date-end_date).days)
 
-
 for symbol in symbols:
-    
-    start_date = dt.date(2023,6,1)
-    end_date =  dt.datetime.now().date()
 
     df = pd.DataFrame()
 
@@ -79,7 +75,7 @@ for symbol in symbols:
         ed = (start_date + dt.timedelta(days = 99 if total_days>100 else total_days)).strftime("%Y-%m-%d")
         start_date = start_date.strftime("%Y-%m-%d")
         
-        new_data = get_data(f'NSE:{symbol}23AUGFUT',1,start_date,ed)
+        new_data = get_data(f'{symbol}',1,start_date,ed)
         df = pd.concat([df,new_data])
              
         total_days = total_days-100 if total_days>100 else total_days-total_days
