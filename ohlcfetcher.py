@@ -4,7 +4,7 @@ import datetime as dt
 import os
 import pandas as pd
 import numpy as np
-
+ 
 app_id = ""
 app_secret = ""
 redirect_url = "https://www.google.com/"
